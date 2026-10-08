@@ -2,7 +2,24 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Node.js version
+
+This project uses Node.js **24.18.0** (pinned in `.nvmrc` and `engines` in `package.json`). Switch to it with [nvm](https://github.com/nvm-sh/nvm):
+
+```bash
+nvm install   # installs the version from .nvmrc if missing
+nvm use       # switches to the version from .nvmrc
+```
+
+Then install dependencies:
+
+```bash
+npm install
+```
+
+### Development server
+
+Run the development server:
 
 ```bash
 npm run dev
