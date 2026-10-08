@@ -1,6 +1,7 @@
 "use client";
 
 import { ClockIcon, LogOutIcon, PlusIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { ChatAvatar } from "@/components/chat-avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,6 +16,8 @@ import { cn } from "@/lib/utils";
 
 type ChatListProps = {
   chats: Chat[];
+  /** Shown under the header, e.g. receiving problems */
+  alerts?: ReactNode;
   activeChatId: string | null;
   onSelect: (chatId: string) => void;
   onNewChat: () => void;
@@ -23,6 +26,7 @@ type ChatListProps = {
 
 export function ChatList({
   chats,
+  alerts,
   activeChatId,
   onSelect,
   onNewChat,
@@ -52,6 +56,8 @@ export function ChatList({
           </Button>
         </div>
       </header>
+
+      {alerts}
 
       {chats.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 p-4 text-center text-sm text-white/60">

@@ -9,12 +9,14 @@ import type { Credentials } from "@/lib/chats";
 
 type LoginScreenProps = {
   onSubmit: (credentials: Credentials) => Promise<void>;
+  /** Shown until the next sign-in attempt, e.g. why the session ended */
+  notice?: string | null;
 };
 
-export function LoginScreen({ onSubmit }: LoginScreenProps) {
+export function LoginScreen({ onSubmit, notice = null }: LoginScreenProps) {
   const [idInstance, setIdInstance] = useState("");
   const [apiTokenInstance, setApiTokenInstance] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(notice);
   const [pending, setPending] = useState(false);
 
   const canSubmit =
