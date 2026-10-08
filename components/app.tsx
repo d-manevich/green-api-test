@@ -35,12 +35,14 @@ async function signIn(credentials: Credentials): Promise<void> {
 export function App() {
   // undefined until storage is read on the client
   const [credentials, setCredentials] = useState<Credentials | null>();
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     setCredentials(loadCredentials());
   }, []);
 
   async function handleSignIn(next: Credentials) {
+    setNotice(null);
     await signIn(next);
     saveCredentials(next);
     setCredentials(next);
@@ -51,11 +53,20 @@ export function App() {
     setCredentials(null);
   }
 
+  function handleSessionExpired() {
+    handleLogout();
+    setNotice("Session expired, sign in again");
+  }
+
   if (credentials === undefined) return null;
 
   return credentials ? (
-    <ChatScreen onLogout={handleLogout} />
+    <ChatScreen
+      credentials={credentials}
+      onLogout={handleLogout}
+      onSessionExpired={handleSessionExpired}
+    />
   ) : (
-    <LoginScreen onSubmit={handleSignIn} />
+    <LoginScreen onSubmit={handleSignIn} notice={notice} />
   );
 }

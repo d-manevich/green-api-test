@@ -88,6 +88,32 @@ export async function getStateInstance(
   return result.stateInstance;
 }
 
+/** The subset of Instance settings the app depends on */
+export type InstanceSettings = {
+  /** Must be empty: with a webhook URL set, Notifications skip the queue */
+  webhookUrl: string;
+  /** Must be "yes": otherwise incoming Messages never reach the queue */
+  incomingWebhook: "yes" | "no";
+};
+
+export function getSettings(
+  credentials: Credentials,
+  signal?: AbortSignal,
+): Promise<InstanceSettings> {
+  return request(credentials, "getSettings", { signal });
+}
+
+/** Restarts the Instance; new settings apply within ~5 minutes */
+export function setSettings(
+  credentials: Credentials,
+  settings: Partial<InstanceSettings>,
+): Promise<{ saveSettings: boolean }> {
+  return request(credentials, "setSettings", {
+    httpMethod: "POST",
+    body: settings,
+  });
+}
+
 /** Resolves a phone number to a Chat ID; `exist: false` also when the number is hidden by privacy settings */
 export function checkAccount(
   credentials: Credentials,
@@ -179,4 +205,28 @@ export function parseIncomingText(body: NotificationBody): IncomingText | null {
     text,
     timestamp: timestamp * 1000,
   };
+}
+
+/** Short user-facing description of a failed request */
+export function describeError(error: unknown): string {
+  if (!(error instanceof GreenApiError)) {
+    return error instanceof Error ? error.message : "Something went wrong";
+  }
+  switch (error.status) {
+    case 0:
+      return "Could not reach GREEN-API";
+    case 429:
+      return "Too many requests, try again later";
+    case 466:
+      return "Instance quota exceeded";
+    default:
+      return `GREEN-API error ${error.status}`;
+  }
+}
+
+export function isAuthError(error: unknown): boolean {
+  return (
+    error instanceof GreenApiError &&
+    (error.status === 401 || error.status === 403)
+  );
 }
