@@ -4,7 +4,7 @@
 // Replace with the real API client and reducer.
 
 import { useCallback, useState } from "react";
-import type { Chat, Credentials, Message } from "@/lib/chats";
+import type { Chat, Message } from "@/lib/chats";
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -43,15 +43,6 @@ const initialChats: Chat[] = [
     ],
   },
 ];
-
-/** Mock sign-in: token "wrong" → invalid credentials, "starting" → instance not ready */
-export async function mockSignIn(credentials: Credentials): Promise<void> {
-  await delay(600);
-  if (credentials.apiTokenInstance === "wrong")
-    throw new Error("Invalid credentials");
-  if (credentials.apiTokenInstance === "starting")
-    throw new Error("Instance is not ready: starting");
-}
 
 export function useMockChats() {
   const [chats, setChats] = useState<Chat[]>(initialChats);
